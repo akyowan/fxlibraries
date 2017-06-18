@@ -1,9 +1,9 @@
-package http
+package httpserver
 
 import (
 	"encoding/json"
+	"fxlibraries/errors"
 	"net/http"
-	"rdslibraries/errors"
 )
 
 type Response struct {

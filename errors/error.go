@@ -6,7 +6,7 @@ type RDSError struct {
 	msg      string
 }
 
-func NewRDSError(httpCode int, code, msg string) error {
+func NewRDSError(httpCode int, code, msg string) RDSError {
 	return RDSError{httpCode, code, msg}
 }
 func (e RDSError) Error() string {
