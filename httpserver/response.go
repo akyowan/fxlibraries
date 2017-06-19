@@ -24,7 +24,7 @@ func NewResponse() *Response {
 }
 
 // NewResponseWithError
-func NewResponseWithError(err errors.RDSError) *Response {
+func NewResponseWithError(err errors.FXError) *Response {
 	return &Response{
 		HTTPCode: err.HttpCode(),
 		Code:     err.Error(),

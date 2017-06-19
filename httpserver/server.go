@@ -27,8 +27,8 @@ func NewRouter() *Router {
 	}
 }
 
-func (r *Router) RouteHandleFunc(path string, f func(http.ResponseWriter, *http.Request)) *Route {
-	return &Route{r.HandleFunc(path, f)}
+func (r *Router) RouteHandleFunc(path string, f HandleFunc) *Route {
+	return &Route{r.HandleFunc(path, HandlerWrapper(f))}
 }
 
 func (r *Router) AllowedMethods(methods []string) {
