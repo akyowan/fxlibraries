@@ -27,7 +27,6 @@ type DBPool struct {
 }
 
 func NewDBPool(conf DBPoolConfig) *DBPool {
-	loggers.Debug.Println(conf)
 	if conf.Host == "" || conf.User == "" || conf.DBName == "" || conf.Password == "" {
 		panic(errors.New("NewDBPool config error"))
 	}
@@ -48,7 +47,6 @@ func NewDBPool(conf DBPoolConfig) *DBPool {
 			conf.Host,
 			conf.Port,
 			conf.DBName)
-		loggers.Warn.Println(connStr)
 		db, err = gorm.Open("mysql", connStr)
 		if err != nil {
 			loggers.Warn.Printf("NewDBPool connect to db %s:%d %s error:%s", conf.Host, conf.Port, conf.DBName, err.Error())
