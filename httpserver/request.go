@@ -45,12 +45,20 @@ func NewRequest(r *http.Request) *Request {
 
 // Parse Parse the JSON-encoded Request.Body store the result in the value pointed to by v
 // If cache is true, cache the body in BodyBuff
-func (self *Request) Parse(v interface{}, cache bool) error {
-	if cache {
-		self.Body = new(bytes.Buffer)
-		self.BodyBuff.ReadFrom(self.Body)
-		return json.Unmarshal(self.BodyBuff.Bytes(), v)
-	}
+func (self *Request) Parse(v interface{}) error {
+	//if cache {
+	//	self.Body = new(bytes.Buffer)
+	//	self.BodyBuff.ReadFrom(self.Body)
+	//	return json.Unmarshal(self.BodyBuff.Bytes(), v)
+	//}
 	decoder := json.NewDecoder(self.Body)
 	return decoder.Decode(&v)
+}
+
+func (self *Request) ParseCache(v interface{}) error {
+	self.Body = new(bytes.Buffer)
+	self.BodyBuff.ReadFrom(self.Body)
+	return json.Unmarshal(self.BodyBuff.Bytes(), v)
+	//decoder := json.NewDecoder(self.Body)
+	//return decoder.Decode(&v)
 }

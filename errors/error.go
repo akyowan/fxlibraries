@@ -9,6 +9,7 @@ type FXError struct {
 func NewFXError(httpCode int, code, msg string) FXError {
 	return FXError{httpCode, code, msg}
 }
+
 func (e FXError) Error() string {
 	return e.errCode
 }
