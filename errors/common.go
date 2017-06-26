@@ -19,3 +19,7 @@ func NewBadRequest(err string) FXError {
 func NewNotFound(err string) FXError {
 	return NewFXError(http.StatusNotFound, "NOT_FOUND", err)
 }
+
+var (
+	ParameterError = NewBadRequest("Invalid parameter")
+)
