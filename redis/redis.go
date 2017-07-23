@@ -10,7 +10,7 @@ import (
 
 type RedisConfig struct {
 	Host string
-	Port int
+	Port string
 	DB   int
 }
 
@@ -18,29 +18,33 @@ type Client *redis.Client
 
 const Nil = redis.Nil
 
+const RetryCount = 5
+
 func NewClient(info *RedisConfig) Client {
 	if info.Host == "" {
 		panic(errors.New("redis config error"))
 	}
-	if info.Port == 0 {
-		info.Port = 6379
+	if info.Port == "" {
+		info.Port = "6379"
 	}
-	var client *redis.Client
-	for {
+	var (
+		client *redis.Client
+		err    error
+	)
+	for i := 0; i < RetryCount; i++ {
 		client = redis.NewClient(&redis.Options{
-			Addr:     fmt.Sprintf("%s:%d", info.Host, info.Port),
+			Addr:     fmt.Sprintf("%s:%s", info.Host, info.Port),
 			Password: "",
-			DB:       0,
+			DB:       info.DB,
 		})
-		_, err := client.Ping().Result()
+		_, err = client.Ping().Result()
 		if err != nil {
-			loggers.Error.Printf("Failed to connect Redis Server: %s:%s", info.Host, info.Port)
+			loggers.Error.Printf("Failed to connect Redis Server: %v", info)
 			time.Sleep(2 * time.Second)
-			loggers.Warn.Printf("Retrying to connect to redis")
+			loggers.Warn.Printf("Retrying to connect to redis: %v", info)
 		} else {
-			break
+			return client
 		}
 	}
-
-	return client
+	panic(err)
 }
