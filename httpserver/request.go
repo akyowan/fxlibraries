@@ -21,7 +21,7 @@ type Request struct {
 	QueryParams url.Values        `json:"queryPrams,omitempty"`
 	UrlParams   map[string]string `json:"URLParams,omitempty"`
 	URL         *url.URL          `json:"URL,omitempty"`
-	Header      *http.Header      `json:"header,omitempty"`
+	Header      http.Header       `json:"header,omitempty"`
 }
 
 func init() {
@@ -35,6 +35,7 @@ func NewRequest(r *http.Request) *Request {
 	request.Method = r.Method
 	request.Body = r.Body
 	request.RemoteAddr = r.Header.Get("X-Forwarded-For")
+	request.Header = r.Header
 	if request.RemoteAddr == "" {
 		request.RemoteAddr = r.RemoteAddr
 	}

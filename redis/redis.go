@@ -14,13 +14,15 @@ type RedisConfig struct {
 	DB   int
 }
 
-type Client *redis.Client
+type RedisPool struct {
+	*redis.Client
+}
 
 const Nil = redis.Nil
 
 const RetryCount = 5
 
-func NewClient(info *RedisConfig) Client {
+func NewPool(info *RedisConfig) *RedisPool {
 	if info.Host == "" {
 		panic(errors.New("redis config error"))
 	}
@@ -43,7 +45,7 @@ func NewClient(info *RedisConfig) Client {
 			time.Sleep(2 * time.Second)
 			loggers.Warn.Printf("Retrying to connect to redis: %v", info)
 		} else {
-			return client
+			return &RedisPool{client}
 		}
 	}
 	panic(err)
