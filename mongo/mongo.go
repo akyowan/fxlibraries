@@ -4,8 +4,11 @@ import (
 	"errors"
 	"fmt"
 	"fxlibraries/loggers"
-	"gopkg.in/mgo.v2"
+	"log"
+	"os"
 	"time"
+
+	"gopkg.in/mgo.v2"
 )
 
 type MongodbConfig struct {
@@ -30,6 +33,11 @@ func NewPool(conf *MongodbConfig) *MgoPool {
 		session *mgo.Session
 		err     error
 	)
+	if conf.Debug {
+		mgo.SetDebug(true)
+		mLogger := log.New(os.Stderr, "", log.LstdFlags)
+		mgo.SetLogger(mLogger)
+	}
 	for i := 0; i < RetryCount; i++ {
 		mgo.SetDebug(conf.Debug)
 		session, err = mgo.Dial(mgoUrl)
