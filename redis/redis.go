@@ -50,3 +50,10 @@ func NewPool(info *RedisConfig) *RedisPool {
 	}
 	panic(err)
 }
+
+func (r *RedisPool) IsNil(err error) bool {
+	if err == redis.Nil {
+		return true
+	}
+	return false
+}
