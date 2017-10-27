@@ -47,16 +47,12 @@ func NewResponseWithError(err errors.FXError) *Response {
 }
 
 // NewResponseForRedirect
-func NewResponseForRedirect(location, referer string) *Response {
+func NewResponseForRedirect(location string) *Response {
 	resp := &Response{
 		HTTPCode: http.StatusFound,
 		Header:   make(http.Header),
 	}
 	resp.Header.Set("Location", location)
-	if referer != "" {
-		resp.Header.Set("Referer", referer)
-	}
-
 	return resp
 }
 
