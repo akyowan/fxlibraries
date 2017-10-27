@@ -2,8 +2,10 @@ package httpserver
 
 import (
 	"encoding/json"
+	"encoding/xml"
 	"fxlibraries/errors"
 	"net/http"
+	"strings"
 )
 
 type Response struct {
@@ -12,6 +14,12 @@ type Response struct {
 	Msg      string      `json:"message"`
 	Header   http.Header `json:"-"`
 	Data     interface{} `json:"data,omitempty"`
+	IsWx     bool        `json:"-"`
+}
+
+type XMLResponse struct {
+	ReturnCode string `xml:"return_code"`
+	ReturnMsg  string `xml:"return_msg"`
 }
 
 // NewResponse
@@ -44,6 +52,17 @@ func NewResponseForRedirect(url string) *Response {
 
 // Write
 func (r *Response) Write(w http.ResponseWriter) {
+	if r.IsWx {
+		resp := &XMLResponse{
+			ReturnCode: "SUCCESS",
+			ReturnMsg:  "OK",
+		}
+		body, _ := xml.Marshal(resp)
+		dataStr := strings.Replace(string(body), "XMLResponse", "xml", -1)
+		w.Write([]byte(dataStr))
+		return
+
+	}
 	for k, vv := range r.Header {
 		for _, v := range vv {
 			w.Header().Add(k, v)

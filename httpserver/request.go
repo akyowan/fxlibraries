@@ -3,6 +3,7 @@ package httpserver
 import (
 	"bytes"
 	"encoding/json"
+	"encoding/xml"
 	"github.com/gorilla/mux"
 	"io"
 	"net/http"
@@ -62,4 +63,9 @@ func (self *Request) ParseCache(v interface{}) error {
 	return json.Unmarshal(self.BodyBuff.Bytes(), v)
 	//decoder := json.NewDecoder(self.Body)
 	//return decoder.Decode(&v)
+}
+
+func (self *Request) ParseByXML(v interface{}) error {
+	decoder := xml.NewDecoder(self.Body)
+	return decoder.Decode(&v)
 }
