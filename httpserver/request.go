@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"encoding/xml"
+	"fxlibraries/loggers"
 	"github.com/gorilla/mux"
 	"io"
 	"net/http"
@@ -66,6 +67,8 @@ func (self *Request) ParseCache(v interface{}) error {
 }
 
 func (self *Request) ParseByXML(v interface{}) error {
-	decoder := xml.NewDecoder(self.Body)
-	return decoder.Decode(&v)
+	self.BodyBuff = new(bytes.Buffer)
+	self.BodyBuff.ReadFrom(self.Body)
+	loggers.Debug.Println(string(self.BodyBuff.Bytes()))
+	return xml.Unmarshal(self.BodyBuff.Bytes(), v)
 }
