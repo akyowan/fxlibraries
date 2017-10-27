@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"fxlibraries/errors"
+	"fxlibraries/loggers"
 	"net/http"
 	"strings"
 )
@@ -24,26 +25,33 @@ type XMLResponse struct {
 
 // NewResponse
 func NewResponse() *Response {
-	return &Response{
+	resp := &Response{
 		HTTPCode: http.StatusOK,
 		Code:     "OK",
 		Msg:      "Success",
+		Header:   make(http.Header),
 	}
+	resp.Header.Set("Content-Type", "application/json")
+	return resp
 }
 
 // NewResponseWithError
 func NewResponseWithError(err errors.FXError) *Response {
-	return &Response{
+	resp := &Response{
 		HTTPCode: err.HttpCode(),
 		Code:     err.Error(),
 		Msg:      err.ErrMsg(),
+		Header:   make(http.Header),
 	}
+	resp.Header.Set("Content-Type", "application/json")
+	return resp
 }
 
 // NewResponseForRedirect
 func NewResponseForRedirect(url string) *Response {
 	resp := &Response{
 		HTTPCode: http.StatusFound,
+		Header:   make(http.Header),
 	}
 	resp.Header.Set("Location", url)
 
@@ -68,7 +76,6 @@ func (r *Response) Write(w http.ResponseWriter) {
 			w.Header().Add(k, v)
 		}
 	}
-	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(r.HTTPCode)
 	body, err := json.Marshal(r)
 	if err != nil {
