@@ -21,10 +21,19 @@ type Route struct {
 type OriginValidator func(string) bool
 
 func NewRouter() *Router {
-	return &Router{
+	r := &Router{
 		mux.NewRouter(),
 		make([]handlers.CORSOption, 0),
 	}
+	r.RouteAlive()
+	return r
+}
+
+func (r *Router) RouteAlive() *Route {
+	return &Route{r.HandleFunc("/alive", func(w http.ResponseWriter, r *http.Request) {
+		response := NewResponse()
+		response.Write(w)
+	})}
 }
 
 func (r *Router) RouteHandleFunc(path string, f HandleFunc) *Route {
