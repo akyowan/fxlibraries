@@ -41,9 +41,9 @@ func NewPool(info *RedisConfig) *RedisPool {
 		})
 		_, err = client.Ping().Result()
 		if err != nil {
-			loggers.Error.Printf("Failed to connect Redis Server: %v", info)
+			loggers.Error.Printf("Failed to connect Redis Server: %v error:%s", info, err.Error())
 			time.Sleep(2 * time.Second)
-			loggers.Warn.Printf("Retrying to connect to redis: %v", info)
+			loggers.Warn.Printf("Retrying to connect")
 		} else {
 			return &RedisPool{client}
 		}
