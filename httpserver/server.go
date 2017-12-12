@@ -1,10 +1,10 @@
 package httpserver
 
 import (
-	"net/http"
-
+	"fxlibraries/version"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	"net/http"
 )
 
 type HandleFunc func(*Request) *Response
@@ -32,6 +32,7 @@ func NewRouter() *Router {
 func (r *Router) RouteAlive() *Route {
 	return &Route{r.HandleFunc("/alive", func(w http.ResponseWriter, r *http.Request) {
 		response := NewResponse()
+		response.Data = version.ServicesInfo()
 		response.Write(w)
 	})}
 }
