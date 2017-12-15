@@ -24,7 +24,7 @@ var (
 )
 
 func init() {
-	completeDate, _ = time.ParseInLocation("2006-01-02 15:04:05", _DATE_, time.Local)
+	completeDate, _ = time.Parse("2006-01-02T15:04:05Z0700", _DATE_)
 	version = _VERSION_
 	binary = os.Args[0]
 	startTime = time.Now()
