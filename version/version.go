@@ -56,6 +56,6 @@ func ServicesInfo() *ServiceInfo {
 		Binary:       Binary(),
 		CompleteDate: CompleteDate(),
 		StartTime:    StartTime(),
-		RunTime:      fmt.Sprintln(RunTime()),
+		RunTime:      fmt.Sprintf(RunTime()),
 	}
 }
