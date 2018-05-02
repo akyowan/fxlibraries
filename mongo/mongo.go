@@ -12,10 +12,12 @@ import (
 )
 
 type MongodbConfig struct {
-	Host   string
-	Port   int
-	DBName string
-	Debug  bool
+	Host     string
+	Port     int
+	DBName   string
+	Debug    bool
+	Username string
+	Password string
 }
 
 var GlobalSession *mgo.Session
@@ -26,7 +28,7 @@ func NewPool(conf *MongodbConfig) *mgo.Session {
 	if conf.Host == "" || conf.Port <= 0 || conf.DBName == "" {
 		panic(errors.New("MongoDB config error"))
 	}
-	mgoUrl := fmt.Sprintf("%s:%d", conf.Host, conf.Port)
+	mgoUrl := fmt.Sprintf("%s:%d?maxPoolSize=128", conf.Host, conf.Port)
 	var (
 		session *mgo.Session
 		err     error
@@ -46,6 +48,12 @@ func NewPool(conf *MongodbConfig) *mgo.Session {
 			continue
 		}
 		session.SetPoolLimit(128)
+
+		err = session.DB(conf.DBName).Login(conf.Username, conf.Password)
+		if err != nil {
+			panic(err)
+		}
+
 		return session
 	}
 	panic(err)
