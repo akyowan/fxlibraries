@@ -18,13 +18,11 @@ type MongodbConfig struct {
 	Debug  bool
 }
 
-type MgoPool struct {
-	*mgo.Database
-}
+var GlobalSession *mgo.Session
 
 const RetryCount = 5
 
-func NewPool(conf *MongodbConfig) *MgoPool {
+func NewPool(conf *MongodbConfig) *mgo.Session {
 	if conf.Host == "" || conf.Port <= 0 || conf.DBName == "" {
 		panic(errors.New("MongoDB config error"))
 	}
@@ -47,11 +45,10 @@ func NewPool(conf *MongodbConfig) *MgoPool {
 			loggers.Warn.Printf("Retrying to connect to mongodb: %v", conf)
 			continue
 		}
-		db := session.DB(conf.DBName)
-		return &MgoPool{db}
+		session.SetPoolLimit(128)
+		return session
 	}
 	panic(err)
-
 }
 
 func NotFound(err error) bool {
