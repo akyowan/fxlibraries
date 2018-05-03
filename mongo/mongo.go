@@ -49,9 +49,11 @@ func NewPool(conf *MongodbConfig) *mgo.Session {
 		}
 		session.SetPoolLimit(128)
 
-		err = session.DB(conf.DBName).Login(conf.Username, conf.Password)
-		if err != nil {
-			panic(err)
+		if conf.Username != "" && conf.Password != "" {
+			err = session.DB(conf.DBName).Login(conf.Username, conf.Password)
+			if err != nil {
+				panic(err)
+			}
 		}
 
 		return session
